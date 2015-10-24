@@ -1,0 +1,11 @@
+{
+  "name": "thr-client",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "superagent": "^1.4.0"
+  },
+  "author": "",
+  "license": "ISC"
+}
