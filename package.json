@@ -11,6 +11,6 @@
     "koa": "^1.1.0",
     "koa-static": "^1.5.0"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Travis Jeffery",
+  "license": "MIT"
 }

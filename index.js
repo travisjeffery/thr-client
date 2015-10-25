@@ -66,7 +66,7 @@ THR.prototype.fetch = function(cb) {
 THR.prototype.setImgs = function(imgs) {
   var node = document.querySelector(this.sel);
   imgs.forEach(function (e) {
-    var img = document.createElement("img");
+    var img = document.createElement('img');
     img.src = e.icon;
     node.appendChild(img);
   });
@@ -80,4 +80,4 @@ function key(username) {
   return 'thr:' + username;
 }
 
-window.THR = THR;
+module.exports = window.THR = THR;

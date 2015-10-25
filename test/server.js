@@ -3,5 +3,6 @@ var serve = require('koa-static');
 var app = koa();
 
 app.use(serve('.'));
+app.use(serve('..'));
 
 app.listen(3000);
