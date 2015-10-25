@@ -2,4 +2,4 @@ clean:
 	@rm -f thr.js
 
 build:
-	@browserify index.js -o thr.js
+	@./node_modules/.bin/browserify -g uglifyify index.js -o thr.js
