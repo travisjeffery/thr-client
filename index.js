@@ -1,4 +1,7 @@
 var request = require('superagent');
+var LRU = require('storage-lru').StorageLRU;
+var asyncify = require('storage-lru').asyncify;
+var cache = new LRU(asyncify(localStorage));
 
 /**
  * Initialize.
@@ -6,6 +9,7 @@ var request = require('superagent');
 
 function THR() {
   if (!(this instanceof THR)) return new THR();
+  this.addr = 'https://znbtd4y5ii.execute-api.us-east-1.amazonaws.com/prod/';
 };
 
 /**
@@ -31,18 +35,49 @@ THR.prototype.sel = function(sel) {
  */
 
 THR.prototype.fetch = function(cb) {
+  if (!cb) cb = function(){};
   var self = this;
-  request
-    .get('http://localhost:3000/' + self.user)
-    .end(function(err, res) {
-      if (err) return cb(err);
-      var node = document.querySelector(self.sel);
-      res.body.forEach(function (e) {
-        var img = document.createElement("img");
-        img.src = e.icon;
-        node.appendChild(img);
+
+  cache.getItem(key(self.user), { json: true }, function (err, imgs) {
+    if (imgs) {
+      self.setImgs(imgs);
+      return cb(imgs);
+    }
+
+    request
+      .post(self.addr)
+      .send({ username: self.user })
+      .end(function(err, res) {
+        if (err) return cb(err);
+        cache.setItem(key(self.user), res.body, {
+          json: true, cacheControl:'max-age=86400'
+        });
+        self.setImgs(res.body);
+        cb(res.body);
       });
-    });
+  });
+
+}
+
+/**
+ * Add imgs to dom.
+ */
+
+THR.prototype.setImgs = function(imgs) {
+  var node = document.querySelector(this.sel);
+  imgs.forEach(function (e) {
+    var img = document.createElement("img");
+    img.src = e.icon;
+    node.appendChild(img);
+  });
+}
+
+/**
+ * Key for given `username`.
+ */
+
+function key(username) {
+  return 'thr:' + username;
 }
 
 window.THR = THR;
